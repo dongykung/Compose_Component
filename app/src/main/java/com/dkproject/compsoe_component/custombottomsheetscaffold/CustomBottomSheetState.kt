@@ -9,7 +9,6 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Velocity
 
 class CustomBottomSheetState(
