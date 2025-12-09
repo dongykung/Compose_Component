@@ -33,6 +33,22 @@ import androidx.compose.ui.util.fastMaxOfOrNull
 import com.dkproject.compsoe_component.custombottomsheetscaffold.CustomBottomSheetDefault
 import kotlin.math.roundToInt
 
+/**
+ * Collapsed(축소), HalfExpanded(절반), FullyExpanded(확장) 상태를 가지는 BottomSheetScaffold
+ *
+ * @param scaffoldState CustomBottomSheet 상태.
+ * @param sheetDragHandle DragHandle의 Composable 기본값은 [CustomBottomSheetDefault.DragHandle] 입니다.
+ * @param topBar TopBar Composable.
+ * @param titleContent Title Section Composable.
+ * @param mapContent 지도가 들어갈 Composable]].
+ * @param sheetContent BottomSheet의 content Composable.
+ * @param floatingActionButton floatingActionButton Composable.
+ * @param snackbarHost 스낵바 Composable.
+ * @param sheetPeekHeight Collapsed 상태의 BottomSheet 최소값 기본값은 [CustomBottomSheetDefault.SheetPeekHeight] 입니다.
+ * @param containerColor Container의 Color 기본값은 [Color.White] 입니다.
+ * @param contentColor Content의 Color 기본값은 [contentColorFor] 입니다.
+ *
+ */
 @Composable
 fun CustomBottomSheetScaffold(
     modifier: Modifier = Modifier,
