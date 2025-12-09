@@ -1,5 +1,3 @@
-package com.dkproject.compsoe_component.custombottomsheetscaffold
-
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -21,36 +19,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxOfOrNull
-import kotlinx.coroutines.launch
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.component3
-import kotlin.collections.component4
-import kotlin.collections.component5
+import com.dkproject.compsoe_component.custombottomsheetscaffold.CustomBottomSheetDefault
 import kotlin.math.roundToInt
 
 @Composable
 fun CustomBottomSheetScaffold(
     modifier: Modifier = Modifier,
     scaffoldState: CustomBottomSheetScaffoldState = rememberCustomBottomSheetScaffoldState(),
-    sheetDragHandle: @Composable () -> Unit,
+    sheetDragHandle: @Composable () -> Unit = { CustomBottomSheetDefault.DragHandle() },
     topBar: @Composable () -> Unit,
     titleContent: @Composable () -> Unit,
     mapContent: @Composable () -> Unit,
     sheetContent: @Composable () -> Unit,
+    floatingActionButton: @Composable () -> Unit = {},
     snackbarHost: @Composable (SnackbarHostState) -> Unit = { SnackbarHost(it) },
+    sheetPeekHeight: Dp = CustomBottomSheetDefault.SheetPeekHeight,
     containerColor: Color = Color.White,
     contentColor: Color = contentColorFor(containerColor)
 ) {
@@ -66,11 +60,12 @@ fun CustomBottomSheetScaffold(
                 contentColor = contentColor,
                 dragHandle = sheetDragHandle,
                 content = sheetContent,
-                customSheetValue = scaffoldState.bottomSheetState.currentValue
             )
         },
         sheetOffset = { scaffoldState.bottomSheetState.requireOffset() },
         snackbarHost = { snackbarHost(scaffoldState.snackbarHostState) },
+        floatingActionButton = floatingActionButton,
+        sheetPeekHeight = sheetPeekHeight,
         sheetState = scaffoldState.bottomSheetState
     )
 }
@@ -80,15 +75,13 @@ internal fun CustomStandardBottomSheet(
     state: CustomBottomSheetState,
     containerColor: Color,
     contentColor: Color,
-    customSheetValue: CustomSheetValue,
-    dragHandle: @Composable (() -> Unit)?,
+    dragHandle: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
     val orientation = Orientation.Vertical
 
     val cornerRadius by animateDpAsState(
-        targetValue = if (customSheetValue == CustomSheetValue.FullyExpanded) 0.dp else 24.dp,
+        targetValue = if (state.currentValue == CustomSheetValue.FullyExpanded) 0.dp else 24.dp,
         animationSpec = tween(
             durationMillis = 300,
             easing = FastOutSlowInEasing
@@ -96,45 +89,9 @@ internal fun CustomStandardBottomSheet(
         label = "cornerRadius"
     )
 
-    val nestedScroll = Modifier.nestedScroll(
-        remember(state.anchoredDraggableState) {
-            consumeSwipeNestedScrollConnection(
-                sheetState = state,
-                orientation = orientation,
-                onFling = { velocity ->
-                    scope.launch {
-                        val currentState = state.currentValue
-                        val currentOffset = state.requireOffset()
-
-                        val targetValue = when {
-                            currentState == CustomSheetValue.Collapsed -> {
-                                // Collapsed 상태에서 스크롤 또는 fling 시 Half로 이동
-                                if (velocity < 0 || currentOffset < state.anchoredDraggableState.anchors.positionOf(
-                                        CustomSheetValue.Collapsed
-                                    )
-                                ) {
-                                    CustomSheetValue.HalfExpanded
-                                } else {
-                                    CustomSheetValue.Collapsed
-                                }
-                            }
-
-                            else -> state.anchoredDraggableState.anchors.closestAnchor(currentOffset)
-                        }
-
-                        if (targetValue != null) {
-                            state.animateTo(targetValue)
-                        }
-                    }
-                }
-            )
-        }
-    )
-
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .then(nestedScroll)
             .clipToBounds(),
         color = containerColor,
         contentColor = contentColor,
@@ -142,19 +99,17 @@ internal fun CustomStandardBottomSheet(
         shadowElevation = 2.dp
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            if (dragHandle != null) {
-                Box(
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .anchoredDraggable(
-                            state = state.anchoredDraggableState,
-                            orientation = orientation,
-                            enabled = true,
-                            flingBehavior = AnchoredDraggableDefaults.flingBehavior(state.anchoredDraggableState)
-                        )
-                ) {
-                    dragHandle()
-                }
+            Box(
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .anchoredDraggable(
+                        state = state.anchoredDraggableState,
+                        orientation = orientation,
+                        enabled = true,
+                        flingBehavior = AnchoredDraggableDefaults.flingBehavior(state.anchoredDraggableState)
+                    )
+            ) {
+                dragHandle()
             }
             Box(modifier = Modifier.weight(1f)) {
                 content()
@@ -170,7 +125,9 @@ internal fun CustomBottomSheetScaffoldLayout(
     titleContent: @Composable () -> Unit,
     mapContent: @Composable () -> Unit,
     bottomSheet: @Composable () -> Unit,
+    floatingActionButton: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit,
+    sheetPeekHeight: Dp,
     sheetOffset: () -> Float,
     sheetState: CustomBottomSheetState,
 ) {
@@ -182,10 +139,17 @@ internal fun CustomBottomSheetScaffoldLayout(
                 titleContent,
                 mapContent,
                 bottomSheet,
+                floatingActionButton,
                 snackbarHost
             )
-    ) { (topBarMeasurable, titleMeasurable, mapMeasurable, sheetMeasurable, snackbarMeasurable),
-        constraints ->
+    ) { measurable, constraints ->
+        val topBarMeasurable = measurable[0]
+        val titleMeasurable = measurable[1]
+        val mapMeasurable = measurable[2]
+        val sheetMeasurable = measurable[3]
+        val fabMeasurable = measurable[4]
+        val snackbarMeasurable = measurable[5]
+
         val layoutWidth = constraints.maxWidth
         val layoutHeight = constraints.maxHeight
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
@@ -193,19 +157,21 @@ internal fun CustomBottomSheetScaffoldLayout(
         val topBarPlaceable = topBarMeasurable.fastMap { it.measure(looseConstraints) }
         val topBarHeight = topBarPlaceable.fastMaxOfOrNull { it.height } ?: 0
 
-        val collapsedSheetHeight = 200.dp.toPx()
+        val collapsedSheetHeight = sheetPeekHeight.toPx()
         val halfExpandedSheetHeight = layoutHeight / 2f
 
+        val collapsedOffset = layoutHeight - collapsedSheetHeight
+        val halfExpandedOffset = layoutHeight - halfExpandedSheetHeight
+
         val newAnchors = DraggableAnchors {
-            CustomSheetValue.Collapsed at layoutHeight - collapsedSheetHeight
-            CustomSheetValue.HalfExpanded at layoutHeight - halfExpandedSheetHeight
+            CustomSheetValue.Collapsed at collapsedOffset
+            CustomSheetValue.HalfExpanded at halfExpandedOffset
             CustomSheetValue.FullyExpanded at topBarHeight.toFloat()
         }
         sheetState.updateAnchors(newAnchors)
 
         val currentOffset = sheetOffset()
 
-        // 바텀시트 상태에 따라 최대 높이 계산 (가장 큰 값 사용)
         val sheetMaxHeight = (layoutHeight - currentOffset).coerceAtLeast(0f).toInt()
         val sheetConstraints = looseConstraints.copy(maxHeight = sheetMaxHeight)
         val sheetPlaceable = sheetMeasurable.fastMap { it.measure(sheetConstraints) }
@@ -213,8 +179,6 @@ internal fun CustomBottomSheetScaffoldLayout(
         val titlePlaceable = titleMeasurable.fastMap { it.measure(looseConstraints) }
         val titleHeight = titlePlaceable.fastMaxOfOrNull { it.height } ?: 0
 
-        val collapsedOffset = layoutHeight - collapsedSheetHeight
-        val halfExpandedOffset = layoutHeight - halfExpandedSheetHeight
         val transitionRange = (collapsedOffset - halfExpandedOffset).coerceAtLeast(1f)
 
         val titleProgress =
@@ -224,8 +188,25 @@ internal fun CustomBottomSheetScaffoldLayout(
         val mapY = topBarHeight + titleHeight - (titleHeight * titleProgress).roundToInt()
 
         val mapPlaceable = mapMeasurable.fastMap {
-            it.measure(looseConstraints.copy(maxHeight = layoutHeight - collapsedSheetHeight.toInt() - topBarHeight - titleHeight + 24.dp.toPx().toInt()))
+            it.measure(
+                looseConstraints.copy(
+                    maxHeight = layoutHeight - collapsedSheetHeight.toInt() - topBarHeight - titleHeight + 24.dp.toPx()
+                        .toInt()
+                )
+            )
         }
+
+        val fabPlaceable = fabMeasurable.fastMap { it.measure(looseConstraints) }
+        val fabHeight = fabPlaceable.fastMaxOfOrNull { it.height } ?: 0
+        val fabWidth = fabPlaceable.fastMaxOfOrNull { it.width } ?: 0
+        val fabMarginBottom = 24.dp.toPx()
+        val fabFadeEndPoint = topBarHeight + fabHeight + fabMarginBottom
+        val halfToFabHiddenRange = (halfExpandedOffset - fabFadeEndPoint).coerceAtLeast(1f)
+        val fabExpansionProgress =
+            ((halfExpandedOffset - currentOffset) / halfToFabHiddenRange).coerceIn(0f, 1f)
+        val fabAlpha = 1f - fabExpansionProgress
+        val fabX = (layoutWidth - fabWidth - 16.dp.toPx()).roundToInt()
+        val fabY = (currentOffset - fabHeight - fabMarginBottom).roundToInt()
 
         val snackbarPlaceable = snackbarMeasurable.fastMap { it.measure(looseConstraints) }
 
@@ -251,6 +232,12 @@ internal fun CustomBottomSheetScaffoldLayout(
             }
 
             topBarPlaceable.fastForEach { it.placeRelative(0, 0) }
+
+            fabPlaceable.fastForEach {
+                it.placeRelativeWithLayer(fabX, fabY) {
+                    alpha = fabAlpha
+                }
+            }
 
             val snackbarWidth = snackbarPlaceable.fastMaxOfOrNull { it.width } ?: 0
             val snackbarHeight = snackbarPlaceable.fastMaxOfOrNull { it.height } ?: 0
@@ -284,18 +271,9 @@ fun rememberCustomBottomSheetScaffoldState(
 
 @Composable
 internal fun rememberCustomSheetState(
-    confirmValueChange: (CustomSheetValue) -> Boolean = { true },
     initialValue: CustomSheetValue = CustomSheetValue.Collapsed,
-    skipHiddenState: Boolean = false,
 ): CustomBottomSheetState {
-    return rememberSaveable(
-        confirmValueChange,
-        skipHiddenState,
-        saver =
-            CustomBottomSheetState.Saver()
-    ) {
-        CustomBottomSheetState(
-            initialValue = initialValue,
-        )
+    return rememberSaveable(saver = CustomBottomSheetState.Saver()) {
+        CustomBottomSheetState(initialValue = initialValue)
     }
 }
