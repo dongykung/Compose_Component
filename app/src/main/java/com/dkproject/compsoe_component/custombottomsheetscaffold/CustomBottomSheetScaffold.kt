@@ -197,8 +197,8 @@ internal fun CustomBottomSheetScaffoldLayout(
 
         val transitionRange = (collapsedOffset - halfExpandedOffset).coerceAtLeast(1f)
 
-        val titleProgress =
-            ((collapsedOffset - currentOffset) / transitionRange).coerceIn(0f, 1f)
+        val titleProgress = ((collapsedOffset - currentOffset) / transitionRange).coerceIn(0f, 1f)
+        val titleAlpha = 1f- titleProgress
 
         val titleY = topBarHeight - (titleHeight * titleProgress).roundToInt()
         val mapY = topBarHeight + titleHeight - (titleHeight * titleProgress).roundToInt()
@@ -239,7 +239,7 @@ internal fun CustomBottomSheetScaffoldLayout(
                     x = 0,
                     y = titleY
                 ) {
-                    alpha = 1f - titleProgress
+                    alpha = titleAlpha
                 }
             }
 
