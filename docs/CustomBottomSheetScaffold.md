@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/b5f08eb0-26fb-4976-a42b-da9473a75207
 </table>
 <br>
 
-### 사용법
+### [사용법](https://github.com/dongykung/Compose_Component/blob/main/app/src/main/java/com/dkproject/compsoe_component/custombottomsheetscaffold/CustomBottomSheetScaffoldEx.kt)
 ```kotlin
 @Composable
 fun CustomBottomSheetScaffoldEx(modifier: Modifier = Modifier) {
