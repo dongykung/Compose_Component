@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,16 +8,17 @@ plugins {
 
 android {
     namespace = "com.dkproject.compsoe_component"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.dkproject.compsoe_component"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(type = "String", name = "NAVER_MAP_CLIENT_ID", value = getApiKey("NAVER_MAP_CLIENT_ID"))
     }
 
     buildTypes {
@@ -36,10 +39,19 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
+fun getApiKey(propertyKey:String):String{
+    return gradleLocalProperties(rootDir, providers).getProperty(propertyKey)
+}
+
 dependencies {
+
+    implementation(libs.naver.map.sdk)
+    implementation(libs.naver.map.compose)
+    implementation(libs.kotlinx.immutable)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
