@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Compsoe_Component</string>
+    <string name="action_snackbar_button">액션 스낵바 버튼1</string>
+    <string name="action_snackbar_button2">액션 스낵바 버튼2</string>
+    <string name="action_snackbar">액션 스낵바 입니다.</string>
+    <string name="action_snackbar_label">액션</string>
+    <string name="base_snackbar_button">기본 스낵바 버튼1</string>
+    <string name="base_snackbar_button2">기본 스낵바 버튼2</string>
+    <string name="base_snackbar">기본 스낵바 입니다.</string>
+
 </resources>
