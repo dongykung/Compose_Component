@@ -2,7 +2,6 @@ package com.dkproject.compsoe_component.snackbar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -10,7 +9,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +31,6 @@ fun CustomSnackbarEx(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { CustomSnackbarHostState() }
     var snackbarResultText by remember { mutableStateOf("") }
-
     Scaffold(
         snackbarHost = { CustomSnackbarHost(snackbarHostState) }
     ) { innerPadding ->
@@ -54,12 +51,10 @@ fun CustomSnackbarEx(
             Button(onClick = {
                 scope.launch {
                     snackbarHostState.currentSnackbarData?.dismiss()
-                    snackbarHostState.showSnackbar(
-                        CustomSnackbarVisuals.ActionSnackbar(
-                            message = context.getString(R.string.action_snackbar),
-                            actionLabel = context.getString(R.string.action_snackbar_label),
-                            action = { snackbarResultText = "액션 스낵바 버튼1 ActionPerformed" }
-                        )
+                    snackbarHostState.showActionSnackbar(
+                        message = context.getString(R.string.action_snackbar),
+                        actionLabel = context.getString(R.string.action_snackbar_label),
+                        action = { snackbarResultText = "액션 스낵바 버튼1 ActionPerformed" }
                     )
                 }
             }) {
@@ -69,12 +64,10 @@ fun CustomSnackbarEx(
             Button(onClick = {
                 scope.launch {
                     snackbarHostState.currentSnackbarData?.dismiss()
-                    val result = snackbarHostState.showSnackbar(
-                        CustomSnackbarVisuals.ActionSnackbar(
-                            message = context.getString(R.string.action_snackbar),
-                            actionLabel = context.getString(R.string.action_snackbar_label),
-                            action = {}
-                        )
+                    val result = snackbarHostState.showActionSnackbar(
+                        message = context.getString(R.string.action_snackbar),
+                        actionLabel = context.getString(R.string.action_snackbar_label),
+                        action = {}
                     )
                     snackbarResultText = when (result) {
                         CustomSnackbarResult.Dismissed -> {
@@ -95,10 +88,8 @@ fun CustomSnackbarEx(
                 scope.launch {
                     snackbarHostState.currentSnackbarData?.dismiss()
                     snackbarHostState.showSnackbar(
-                        CustomSnackbarVisuals.BaseSnackbar(
-                            message = context.getString(R.string.base_snackbar),
-                            duration = 3000L
-                        )
+                        message = context.getString(R.string.base_snackbar),
+                        duration = 3000L
                     )
                 }
             }) {
@@ -109,16 +100,15 @@ fun CustomSnackbarEx(
                 scope.launch {
                     snackbarHostState.currentSnackbarData?.dismiss()
                     val result = snackbarHostState.showSnackbar(
-                        CustomSnackbarVisuals.BaseSnackbar(
-                            message = context.getString(R.string.base_snackbar),
-                            duration = 3000L
-                        )
+                        message = context.getString(R.string.base_snackbar),
+                        duration = 3000L
                     )
 
                     snackbarResultText = when (result) {
                         CustomSnackbarResult.Dismissed -> {
                             "기본 스낵바 버튼 dismiss"
                         }
+
                         CustomSnackbarResult.ActionPerformed -> {
                             "기본 스낵바 버튼 ActionPerformed"
                         }
