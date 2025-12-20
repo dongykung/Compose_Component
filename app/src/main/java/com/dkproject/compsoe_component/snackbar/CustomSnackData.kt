@@ -22,6 +22,18 @@ class CustomSnackbarHostState {
     var currentSnackbarData by mutableStateOf<CustomSnackbarData?>(null)
         private set
 
+
+    suspend fun showSnackbar(message: String, duration: Long = 4000L) =
+        showSnackbar(CustomSnackbarVisuals.BaseSnackbar(message, duration))
+
+    suspend fun showActionSnackbar(
+        message: String,
+        actionLabel: String,
+        duration: Long = 4000L,
+        action: () -> Unit
+    ): CustomSnackbarResult = showSnackbar(
+        CustomSnackbarVisuals.ActionSnackbar(message, duration, actionLabel, action)
+    )
     /**
      * 커스텀 스낵바를 보여줍니다.
      * @param visuals 보여질 스낵바 종류를 전달합니다. 종류로는 ActionSnackbar, BaseSnackbar가 있습니다.
@@ -83,13 +95,6 @@ sealed interface CustomSnackbarVisuals {
     val message: String
     val duration: Long
 
-    /**
-     * 액션 버튼이 있는 스낵바 입니다.
-     * @param message 스낵바에 보여질 메시지 입니다..
-     * @param duration 스낵바가 보여질 시간입니다. 기본값은 4초 입니다.
-     * @param actionLabel 액션 버튼의 제목입니다.
-     * @param action 액션 버튼이 눌리고 나서 호출되는 람다 입니다.
-     */
     data class ActionSnackbar(
         override val message: String,
         override val duration: Long = 4000L,
@@ -97,12 +102,6 @@ sealed interface CustomSnackbarVisuals {
         val action: () -> Unit,
     ) : CustomSnackbarVisuals
 
-
-    /**
-     * 기본 스낵바 입니다.
-     * @param message 스낵바에 보여질 메시지 입니다..
-     * @param duration 스낵바가 보여질 시간입니다. 기본값은 4초 입니다.
-     */
     data class BaseSnackbar(
         override val message: String,
         override val duration: Long = 4000L,
