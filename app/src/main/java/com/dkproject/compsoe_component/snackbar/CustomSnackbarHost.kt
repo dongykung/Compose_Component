@@ -35,10 +35,7 @@ fun CustomSnackbarHost(
     hostState: CustomSnackbarHostState,
     modifier: Modifier = Modifier,
     snackbar: @Composable (snackbarData: CustomSnackbarData) -> Unit = {
-        CustomSnackbar(
-            it,
-            modifier
-        )
+        CustomSnackbar(it, modifier)
     }
 ) {
 
