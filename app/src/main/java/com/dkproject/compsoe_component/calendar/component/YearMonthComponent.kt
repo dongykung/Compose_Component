@@ -46,6 +46,7 @@ fun YearMonthMode(
     Column(modifier = modifier) {
         YearMonthModeYearSection(
             year = year,
+            yearRange = state.yearRange,
             onPreviousYearClick = { year-- },
             onNextYearClick = { year++ }
         )
@@ -64,6 +65,7 @@ fun YearMonthMode(
 @Composable
 private fun YearMonthModeYearSection(
     year: Int,
+    yearRange: IntRange,
     onPreviousYearClick: () -> Unit,
     onNextYearClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -72,7 +74,10 @@ private fun YearMonthModeYearSection(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth(),
     ) {
-        IconButton(onClick = onPreviousYearClick) {
+        IconButton(
+            onClick = onPreviousYearClick,
+            enabled = year != yearRange.first
+        ) {
             Icon(
                 Icons.AutoMirrored.Default.KeyboardArrowLeft,
                 null
@@ -81,7 +86,10 @@ private fun YearMonthModeYearSection(
         Spacer(modifier = Modifier.weight(1f))
         Text(text = stringResource(R.string.text_year, year))
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = onNextYearClick) {
+        IconButton(
+            onClick = onNextYearClick,
+            enabled = year != yearRange.last
+        ) {
             Icon(
                 Icons.AutoMirrored.Default.KeyboardArrowRight,
                 null
@@ -105,7 +113,7 @@ private fun YearMonthModeMonthSection(
     ) {
         items(MONTHS_IN_YEAR) {
             val selected =
-                displayedLocalDate.year == year && displayedLocalDate.month.ordinal == it + 1
+                displayedLocalDate.year == year && displayedLocalDate.month.ordinal == it
             val containerColor =
                 if (selected) colors.selectedDayContainerColor else colors.containerColor
             val contentColor =

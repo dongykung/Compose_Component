@@ -1,6 +1,11 @@
 package com.dkproject.compsoe_component.calendar.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,7 +78,6 @@ fun MyDatePicker(
     val calendarModel = remember(locale) {
         MyDatePickerModel(locale, colors)
     }
-
     Column(modifier = modifier.background(colors.containerColor)) {
         AnimatedContent(targetState = state.calendarMode) { mode ->
             when (mode) {
@@ -102,6 +106,7 @@ internal fun CalendarMode(
     Column(modifier = modifier) {
         CalendarModeYearMonthSection(
             displayedMonth = state.displayedMonthLocalDate,
+            yearRange = state.yearRange,
             onPreviousMonthClick = {
                 state.setDisplayedMonth(state.displayedMonthLocalDate.plus(-1, DateTimeUnit.MONTH))
             },
@@ -130,6 +135,7 @@ internal fun CalendarMode(
 @Composable
 internal fun CalendarModeYearMonthSection(
     displayedMonth: LocalDate,
+    yearRange: IntRange,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
     onModeChangeClick: () -> Unit,
@@ -140,7 +146,10 @@ internal fun CalendarModeYearMonthSection(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = onPreviousMonthClick) {
+        IconButton(
+            onClick = onPreviousMonthClick,
+            enabled = displayedMonth.year != yearRange.first || displayedMonth.month.ordinal != 0
+        ) {
             Icon(
                 Icons.AutoMirrored.Default.KeyboardArrowLeft,
                 null
@@ -163,7 +172,10 @@ internal fun CalendarModeYearMonthSection(
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = onNextMonthClick) {
+        IconButton(
+            onClick = onNextMonthClick,
+            enabled = displayedMonth.year != yearRange.last || displayedMonth.month.ordinal != 11
+        ) {
             Icon(
                 Icons.AutoMirrored.Default.KeyboardArrowRight,
                 null
