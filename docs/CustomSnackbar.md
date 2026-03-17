@@ -28,13 +28,11 @@
             scope.launch {
                 // 스낵바 광클 시 이전 스낵바가 바로 사라지고 새 스낵바가 나타나도록 dismiss()를 수행합니다.
                 snackbarHostState.currentSnackbarData?.dismiss()
-                snackbarHostState.showSnackbar(
-                    CustomSnackbarVisuals.ActionSnackbar(
-                        message = context.getString(R.string.action_snackbar),
-                        actionLabel = context.getString(R.string.action_snackbar_label),
-                        action = { snackbarResultText = "액션 스낵바 버튼1 ActionPerformed" }
-                    )
-                )
+                snackbarHostState.showActionSnackbar(
+                  message = context.getString(R.string.action_snackbar),
+                  actionLabel = context.getString(R.string.action_snackbar_label),
+                  action = { snackbarResultText = "액션 스낵바 버튼1 ActionPerformed" }
+                  )
             }
         }) {
             Text(text = stringResource(R.string.action_snackbar_button))
@@ -47,11 +45,9 @@
                 scope.launch {
                   // 스낵바 광클 시 이전 스낵바가 바로 사라지고 새 스낵바가 나타나도록 dismiss()를 수행합니다.
                     snackbarHostState.currentSnackbarData?.dismiss()
-                    snackbarHostState.showSnackbar(
-                        CustomSnackbarVisuals.BaseSnackbar(
-                            message = context.getString(R.string.base_snackbar),
-                            duration = 3000L
-                        )
+                     snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.base_snackbar),
+                        duration = 3000L
                     )
                 }
             }) {
@@ -86,6 +82,18 @@ class CustomSnackbarHostState {
 
     var currentSnackbarData by mutableStateOf<CustomSnackbarData?>(null)
         private set
+
+   suspend fun showSnackbar(message: String, duration: Long = 4000L) =
+        showSnackbar(CustomSnackbarVisuals.BaseSnackbar(message, duration))
+
+    suspend fun showActionSnackbar(
+        message: String,
+        actionLabel: String,
+        duration: Long = 4000L,
+        action: () -> Unit
+    ): CustomSnackbarResult = showSnackbar(
+        CustomSnackbarVisuals.ActionSnackbar(message, duration, actionLabel, action)
+    )
 
     /**
      * 커스텀 스낵바를 보여줍니다.
@@ -247,11 +255,11 @@ private fun CustomSnackbar(
 scope.launch {
     snackbarHostState.currentSnackbarData?.dismiss()
     val result = snackbarHostState.showSnackbar(
-          CustomSnackbarVisuals.ActionSnackbar(
-             message = context.getString(R.string.action_snackbar),
-             actionLabel = context.getString(R.string.action_snackbar_label),
-             action = {}
-             )
+           val result = snackbarHostState.showActionSnackbar(
+                        message = context.getString(R.string.action_snackbar),
+                        actionLabel = context.getString(R.string.action_snackbar_label),
+                        action = {}
+                    )
      )
      snackbarResultText = when (result) {
              CustomSnackbarResult.Dismissed -> {
