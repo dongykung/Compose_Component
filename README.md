@@ -2,6 +2,9 @@
 
 ### [CustomBottomSheetScaffold](https://github.com/dongykung/Compose_Component/blob/main/docs/CustomBottomSheetScaffold.md)
 `Collapsed(축소)`, `HalfExpanded(중간)`, `FullyExpanded(확장)` 3가지의 상태를 가지는 BottomSheetScaffold
+| Collapsed(축소) | HalfExpanded(중간) | FullyExpanded(확장) |
+|:---:|:---:|:---:|
+| <img width="250" alt="collapsed" src="https://github.com/user-attachments/assets/96a36fde-4922-456b-bd92-521fa0a35a04" /> | <img width="250" alt="half_expanded" src="https://github.com/user-attachments/assets/835a7e79-3c96-41b3-88a4-49fc1d43a0fc" /> | <img width="250" alt="fully_expanded" src="https://github.com/user-attachments/assets/3ac096e6-7af3-4f1e-9940-2e2ac587abd7" /> |
 
 <br>
 
