@@ -54,7 +54,7 @@ data class MyDatePickerModel(
         selectedDate: LocalDate?,
         selectedEndDate: LocalDate?,
     ): ImmutableList<MyCalendarDay> {
-        val daysInMonthCount = daysInMonth(today)
+        val daysInMonthCount = daysInMonth(currentLocalDate)
         val totalCells = startOffset + daysInMonthCount
         val trailingEmptyDays = if (totalCells % 7 == 0) 0 else 7 - (totalCells % 7)
         val startDate = currentLocalDate.minus(startOffset, DateTimeUnit.DAY)
