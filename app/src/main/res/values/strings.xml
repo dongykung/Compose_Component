@@ -7,5 +7,10 @@
     <string name="base_snackbar_button">기본 스낵바 버튼1</string>
     <string name="base_snackbar_button2">기본 스낵바 버튼2</string>
     <string name="base_snackbar">기본 스낵바 입니다.</string>
+    <string name="delete_place">장소 삭제에 성공했습니다.</string>
+    <string name="undo">복구</string>
+    <string name="text_year_month">%d년 %d월</string>
+    <string name="text_year">%d년</string>
+    <string name="text_month">%d월</string>
 
 </resources>
