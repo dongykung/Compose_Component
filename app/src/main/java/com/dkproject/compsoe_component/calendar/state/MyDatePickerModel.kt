@@ -27,6 +27,9 @@ data class MyDatePickerModel(
         it.displayName(locale = locale) to it.getDayOfWeekColor(colors)
     }.let { it.takeLast(1) + it.dropLast(1) }.toImmutableList()
 
+    /**
+     *
+     */
     fun getMonth(
         displayedMonth: LocalDate,
         selectedDate: LocalDate? = null,

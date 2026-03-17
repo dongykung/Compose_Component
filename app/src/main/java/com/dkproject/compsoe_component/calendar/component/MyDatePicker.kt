@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -31,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -47,6 +50,9 @@ import com.dkproject.compsoe_component.calendar.state.MyDatePickerDefaults.DAYS_
 import com.dkproject.compsoe_component.calendar.state.MyDatePickerModel
 import com.dkproject.compsoe_component.calendar.state.MyDatePickerState
 import com.dkproject.compsoe_component.calendar.state.MyDatePickerStateImpl
+import com.dkproject.compsoe_component.custombottomsheetscaffold.CustomBottomSheetDefault
+import com.dkproject.compsoe_component.custombottomsheetscaffold.CustomBottomSheetDefault.DragHandle
+import com.dkproject.compsoe_component.custombottomsheetscaffold.CustomBottomSheetDefault.SheetPeekHeight
 import com.dkproject.compsoe_component.ui.theme.Compsoe_ComponentTheme
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -68,6 +74,11 @@ fun rememberMyDatePickerState(
     }
 }
 
+/**
+ * @param state DatePicker 상태.
+ * @param colors DatePicker 컴포넌트의 색상을 정의합니다. 기본값은 [MyDatePickerDefaults.colors] 입니다.
+ *
+ */
 @Composable
 fun MyDatePicker(
     state: MyDatePickerState,
